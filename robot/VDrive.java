@@ -19,6 +19,7 @@ public class VDrive {
     pressed = new EnumMap<>(Key.class);
   }
 
+  // Note: keybinds strings cant contain colon or semicolon
   public void start(int port, Map<Key, String> keybinds) throws IOException {
     serv = new ServerSocket(port);
     System.out.println("Waiting for connection on port " + port + "...");
@@ -27,7 +28,7 @@ public class VDrive {
     // Generate keybind text
     StringBuilder sb = new StringBuilder();
     for (Map.Entry<Key, String> e : keybinds.entrySet()) {
-      sb.append(e.getKey().name() + ": " + e.getValue() + "\n");
+      sb.append(e.getKey().name() + ": " + e.getValue() + ";");
     }
     PrintWriter out = new PrintWriter(conn.getOutputStream(), true);
     out.println(sb.toString());
@@ -38,9 +39,7 @@ public class VDrive {
       public void run() {
         try {
           while (running) {
-            System.out.println(in);
             String[] line = in.readLine().split(":");
-            System.out.println(line);
             if (line == null) {
               break;
             }

@@ -1,4 +1,4 @@
-use std::{net::TcpStream, io::{Write, Read}};
+use std::{net::TcpStream, io::{Write, BufReader, BufRead}};
 mod key;
 use key::*;
 
@@ -7,10 +7,10 @@ fn main() {
 
     // Get keybinds
     let mut binds_raw = String::new();
-    println!("Waiting...");
-    stream.read_to_string(&mut binds_raw).unwrap();
-    println!("Gottem");
-    for item in binds_raw.split("\n") {
+    let mut reader = BufReader::new(&stream);
+    reader.read_line(&mut binds_raw).unwrap();
+    binds_raw.pop(); // Remove newline
+    for item in binds_raw.split(";") {
         if item.len() == 0 {
             continue;
         }
