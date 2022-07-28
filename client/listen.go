@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"net"
+	"strconv"
 	"strings"
 
 	"github.com/andlabs/ui"
@@ -36,10 +37,9 @@ type Event struct {
 
 func listen() {
 	// Connect to robot
-	conn, err := net.Dial("tcp", "localhost:8080")
-	if err != nil {
-		panic(err)
-	}
+	var err error
+	conn, err = net.Dial("tcp", hostname.Text()+":"+strconv.Itoa(port.Value()))
+	handle(err)
 
 	// Get binds
 	read := bufio.NewReader(conn)
@@ -79,7 +79,9 @@ func listen() {
 		for isHosting {
 			_, msg, err := stream.ReadMessage()
 			if err != nil {
-				cleanup()
+				if isHosting {
+					cleanup()
+				}
 				return
 			}
 
@@ -111,12 +113,12 @@ func cleanup() {
 	})
 
 	go func() {
+		isHosting = false
+
 		err := conn.Close()
 		handle(err)
 		err = stream.Close()
 		handle(err)
-
-		isHosting = false
 
 		nameModel.Clear()
 		bindsModel.Clear()

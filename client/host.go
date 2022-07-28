@@ -14,7 +14,7 @@ var port *ui.Spinbox
 
 func host() {
 	// Create window
-	win = ui.NewWindow("RemoDrive", 750, 300, false)
+	win = ui.NewWindow("RemoDrive", 750, 600, false)
 	win.OnClosing(func(*ui.Window) bool {
 		if isHosting {
 			cleanup()
@@ -79,7 +79,7 @@ func host() {
 			room = roomname.Text()
 
 			btn.Disable()
-			btn.SetText("Connecting")
+			btn.SetText("Connecting...")
 
 			go func() {
 				listen()
@@ -114,7 +114,7 @@ func host() {
 		Model: uiBindsModel,
 	})
 	table.AppendTextColumn("Key", 0, ui.TableModelColumnNeverEditable, nil)         // Key column
-	table.AppendTextColumn("Description", 0, ui.TableModelColumnNeverEditable, nil) // Description column
+	table.AppendTextColumn("Description", 1, ui.TableModelColumnNeverEditable, nil) // Description column
 
 	bindsGroup := ui.NewGroup("Binds")
 	bindsGroup.SetChild(table)

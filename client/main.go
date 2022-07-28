@@ -1,27 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
 )
 
 var win *ui.Window
 
-func handle(err error) bool {
+func handle(err error) {
 	if err != nil {
+		done := make(chan struct{})
 		ui.QueueMain(func() {
 			ui.MsgBoxError(win, "Error!", err.Error())
-			fmt.Printf("Error: %s\n", err.Error())
 			win.Destroy()
 			ui.Quit()
-			os.Exit(1)
+			done <- struct{}{}
 		})
-		return false
+		<-done // So that the error stays in original scope
+		panic(err)
 	}
-	return true
 }
 
 func main() {
