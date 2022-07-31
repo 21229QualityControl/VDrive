@@ -80,6 +80,7 @@ func listen() {
 			_, msg, err := stream.ReadMessage()
 			if err != nil {
 				if isHosting {
+					handle(err)
 					cleanup()
 				}
 				return
