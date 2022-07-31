@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/env";
+  import { getKeyForCode } from "$lib/key";
   import { room, name } from "$lib/lib";
 
   type bind = {
@@ -29,7 +30,27 @@
       binds = binds;
     }
   }
+
+  let pressed: Record<number, boolean> = {};
+
+  function keydown(ev: KeyboardEvent) {
+    let key = getKeyForCode(ev.keyCode);
+    if (key && !pressed[ev.keyCode]) {
+      pressed[ev.keyCode] = true;
+      sock.send(key + ":true");
+    }
+  }
+
+  function keyup(ev: KeyboardEvent) {
+    let key = getKeyForCode(ev.keyCode);
+    if (key && pressed[ev.keyCode]) {
+      pressed[ev.keyCode] = false;
+      sock.send(key + ":false");
+    }
+  }
 </script>
+
+<svelte:window on:keydown={keydown} on:keyup={keyup}/>
 
 <h1>Keybinds</h1>
 <table class="table table-striped">
