@@ -25,6 +25,8 @@ public class VDrive {
     System.out.println("Waiting for connection on port " + port + "...");
     conn = serv.accept();
 
+    System.out.println("Received connection.");
+
     // Generate keybind text
     StringBuilder sb = new StringBuilder();
     for (Map.Entry<Key, String> e : keybinds.entrySet()) {
@@ -44,8 +46,12 @@ public class VDrive {
               break;
             }
             Key key = Key.fromString(line[0]);
-            pressed.put(key, line[1].equals("true"));
-            System.out.println("Pressed " + line[0]);
+            pressed.put(key, line[1].startsWith("true"));
+            String val = "Pressed";
+            if (!pressed.get(key)) {
+              val = "Released";
+            }
+            System.out.println(val + " " + line[0]);
           }
         } catch (IOException e) {
           e.printStackTrace();

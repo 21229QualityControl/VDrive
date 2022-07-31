@@ -98,7 +98,7 @@ func listen() {
 				nameModel.RemoveName(ev.Value)
 
 			case EventKindKey:
-				_, err = conn.Write([]byte(ev.Value))
+				_, err = conn.Write([]byte(ev.Value + "\n"))
 				handle(err)
 			}
 		}
