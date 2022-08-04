@@ -1,9 +1,6 @@
-package org.firstinspires.ftc.teamcode;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -36,24 +33,18 @@ public class VDrive {
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
         // Start listening
-        thread = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    while (running) {
-                        String[] line = in.readLine().split(":");
-                        if (line == null) {
-                            break;
-                        }
-                        Key key = Key.fromString(line[0]);
-                        pressed.put(key, line[1].startsWith("true"));
-                        String val = "Pressed";
-                        if (!pressed.get(key)) {
-                            val = "Released";
-                        }
+        thread = new Thread(() -> {
+            try {
+                while (running) {
+                    String[] line = in.readLine().split(":");
+                    if (line == null) {
+                        break;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    Key key = Key.fromString(line[0]);
+                    pressed.put(key, line[1].startsWith("true"));
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
         running = true;
