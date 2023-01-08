@@ -7,10 +7,8 @@
     key: string, 
     value: string,
   }
-
-  let sock: WebSocket;
-  let binds: bind[] = [];
-  if (browser) {
+  
+  function makeSocket() {
     sock = new WebSocket("wss://vdrive.nv7haven.com/join");
     let pars = {
       room_name: $room,
@@ -18,6 +16,9 @@
     }
     sock.onopen = () => {
       sock.send(JSON.stringify(pars));
+    }
+    sock.onclose = () => {
+      makeSocket();
     }
     sock.onmessage = (ev) => {
       let vals: Record<string, string> = JSON.parse(ev.data);
@@ -29,6 +30,12 @@
       }
       binds = binds;
     }
+  }
+
+  let sock: WebSocket;
+  let binds: bind[] = [];
+  if (browser) {
+    makeSocket();
   }
 
   let pressed: Record<number, boolean> = {};
